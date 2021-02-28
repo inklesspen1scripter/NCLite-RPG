@@ -5,18 +5,18 @@
 #pragma semicolon 1
 
 public Plugin myinfo = {
-	name = "[NCRPG] Keys",
+	name = "[NCLiteRPG] Keys",
 	author = "Rabb1t",
 	version = "1.0",
 	description = "Keys can give lvl, xp, credits"
 }
 
-stock const char g_sKeyType[][]= {"ncrpg_xp", "ncrpg_credits", "ncrpg_lvl"};
+stock const char g_sKeyType[][]= {"NCLiteRPG_xp", "NCLiteRPG_credits", "NCLiteRPG_lvl"};
 
 public void OnPluginStart()
 {
 	LoadTranslations("keys_core.phrases");
-	LoadTranslations("keys_ncrpg_module.phrases");
+	LoadTranslations("keys_NCLiteRPG_module.phrases");
 	
 	if (Keys_IsCoreStarted()) Keys_OnCoreStarted();
 }
@@ -64,7 +64,7 @@ public bool OnKeyUse(int client, const char[] sKeyType, Handle hParamsArr, char[
 
 	if(!strcmp(sKeyType, g_sKeyType[0]))
 	{
-		if(!NCRPG_GiveExp(client, StringToInt(sParam)))
+		if(!NCLiteRPG_GiveExp(client, StringToInt(sParam)))
 		{
 			FormatEx(sError, iErrLen, "%T", "ERROR_HAS_OCCURRED", client);
 			return false;
@@ -76,7 +76,7 @@ public bool OnKeyUse(int client, const char[] sKeyType, Handle hParamsArr, char[
 
 	if(!strcmp(sKeyType, g_sKeyType[2]))
 	{
-		if(!NCRPG_SetLevel(client, StringToInt(sParam) + NCRPG_GetLevel(client)))
+		if(!NCLiteRPG_SetLevel(client, StringToInt(sParam) + NCLiteRPG_GetLevel(client)))
 		{
 			FormatEx(sError, iErrLen, "%T", "ERROR_HAS_OCCURRED", client);
 			return false;
@@ -86,7 +86,7 @@ public bool OnKeyUse(int client, const char[] sKeyType, Handle hParamsArr, char[
 		return true;
 	}
 
-	if(!NCRPG_GiveCredits(client, StringToInt(sParam)))
+	if(!NCLiteRPG_GiveCredits(client, StringToInt(sParam)))
 	{
 		FormatEx(sError, iErrLen, "%T", "ERROR_HAS_OCCURRED", client);
 		return false;

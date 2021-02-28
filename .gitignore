@@ -5,7 +5,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -154,12 +155,7 @@ addons/*
 addons/sourcemod/*
 !addons/sourcemod/translations
 !addons/sourcemod/scripting
-addons/sourcemod/scripting/*
-!addons/sourcemod/scripting/NCRPG*
-!addons/sourcemod/scripting/ncrpg*
-!addons/sourcemod/scripting/include
-addons/sourcemod/scripting/include/*
-!addons/sourcemod/scripting/include/NCIncs
+!addons/sourcemod/scripting/*.smx
 
 .vscode
 *.exe

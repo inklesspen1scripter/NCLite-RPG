@@ -1,5 +1,5 @@
 #pragma semicolon 1
-#include "NCIncs/nc_rpg.inc"
+#include "NCLiteIncs/nc_rpg.inc"
 #define ThisSkillShortName "frostnade"
 #define VERSION				"1.4"
 #define MAX_WEAPON_LENGTH	32
@@ -20,14 +20,14 @@ enum Freezing {
 };
 
 public Plugin myinfo = {
-	name		= "NCRPG Skill Frost Nade",
+	name		= "NCLiteRPG Skill Frost Nade",
 	author		= "SenatoR",
-	description	= "Skill Frost Nade for NCRPG",
+	description	= "Skill Frost Nade for NCLiteRPG",
 	version		= VERSION
 };
 
 public void OnPluginStart() {
-	if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) == -1)
+	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1)
 	{
 		for(int i = 1; i <= MaxClients; ++i)
 			if(IsValidPlayer(i))
@@ -36,19 +36,19 @@ public void OnPluginStart() {
 				OnClientPutInServer(i);
 			}
 		
-		NCRPG_OnRegisterSkills();
+		NCLiteRPG_OnRegisterSkills();
 	}
 	hArrayPermittedWpn = CreateArray(ByteCountToCells(MAX_WEAPON_LENGTH));
 }
 
 
-public void OnPluginEnd() { if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCRPG_DisableSkill(ThisSkillID, true); }
-public void NCRPG_OnRegisterSkills() { ThisSkillID = NCRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
+public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
+public void NCLiteRPG_OnRegisterSkills() { ThisSkillID = NCLiteRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
 
 public void OnMapStart() {
 	ClearArray(hArrayPermittedWpn);
 	
-	NCRPG_Configs RPG_Configs = NCRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
+	NCLiteRPG_Configs RPG_Configs = NCLiteRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
 	cfg_fPercent = RPG_Configs.GetFloat(ThisSkillShortName,"percent",0.6);
 	cfg_bStatTime = RPG_Configs.GetInt(ThisSkillShortName,"stattime",0)?true:false;
 	cfg_fTime	 = RPG_Configs.GetFloat(ThisSkillShortName,"time",0.3);
@@ -87,12 +87,12 @@ public void OnMapStart() {
 public void OnClientConnected(int client) { hArrayAttackerTimers[client] = CreateArray( view_as<int>(Freezing)); }
 public void OnClientDisconnect(int client) { KillAttackerTimers(client,true); }
 
-public void NCRPG_OnPlayerSpawn(int client) { KillAttackerTimers(client,false); }
+public void NCLiteRPG_OnPlayerSpawn(int client) { KillAttackerTimers(client,false); }
 
 public void OnClientPutInServer(int client) { SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage); }
 
 public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) {
-	if(!NCRPG_IsValidSkill(ThisSkillID)) return Plugin_Continue;
+	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return Plugin_Continue;
 	if(IsValidPlayer(victim) && IsValidPlayer(attacker) && victim != attacker)
 	{
 		if(GetClientTeam(victim) == GetClientTeam(attacker))
@@ -106,7 +106,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		bool wpn = IsPermittedWeapon(buffer);
 		
 		
-		int level = NCRPG_GetSkillLevel(attacker, ThisSkillID);
+		int level = NCLiteRPG_GetSkillLevel(attacker, ThisSkillID);
 		if(IsPlayerFrozenInternal(victim))
 		{
 			if(!wpn)
@@ -137,18 +137,18 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			if(StrEqual(buffer, "hegrenade_projectile"))
 				if(level > 0)
 				{
-					if(NCRPG_SkillActivate(ThisSkillID,attacker,victim)>= Plugin_Handled)return Plugin_Handled;
+					if(NCLiteRPG_SkillActivate(ThisSkillID,attacker,victim)>= Plugin_Handled)return Plugin_Handled;
 					float time = cfg_bStatTime?cfg_fTime:cfg_fTime*level;
 					
 					int array[Freezing];
 					if(cfg_bFreeze)
 					{
-						NCRPG_FreezePlayer(victim,  time);
+						NCLiteRPG_FreezePlayer(victim,  time);
 						if(cfg_bEffects)CreateIce(victim,time);
 					}
 					else
 					{
-						NCRPG_SlowPlayer(victim, cfg_fSlow*level, time);
+						NCLiteRPG_SlowPlayer(victim, cfg_fSlow*level, time);
 					}
 
 					array[TimerHandle] = CreateTimer(time, Timer_DeleteAttackerFromArray, victim);
@@ -162,7 +162,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 						Format(buffer, sizeof(buffer), "physics/glass/glass_impact_bullet%d.wav", GetRandomInt(1, 4));
 						EmitSoundToAll(buffer, victim);
 					}
-					NCRPG_SkillActivated(ThisSkillID,attacker);
+					NCLiteRPG_SkillActivated(ThisSkillID,attacker);
 				}
 		}
 	}

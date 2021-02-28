@@ -1,5 +1,5 @@
 #pragma semicolon 1
-#include "NCIncs/nc_rpg.inc"
+#include "NCLiteIncs/nc_rpg.inc"
 #define VERSION				"1.7"
 #define ThisSkillShortName "icestab"
 #define MAX_WEAPON_LENGTH	32
@@ -19,14 +19,14 @@ enum Freezing {
 };
 
 public Plugin myinfo = {
-	name		= "NCRPG Skill Ice Stab",
+	name		= "NCLiteRPG Skill Ice Stab",
 	author		= "SenatoR",
-	description	= "Skill Ice Stab for NCRPG",
+	description	= "Skill Ice Stab for NCLiteRPG",
 	version		= VERSION
 };
 
 public void OnPluginStart() {
-	if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) == -1)
+	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1)
 	{
 		for(int i = 1; i <= MaxClients; ++i)
 			if(IsValidPlayer(i))
@@ -35,19 +35,19 @@ public void OnPluginStart() {
 				OnClientPutInServer(i);
 			}
 		
-		NCRPG_OnRegisterSkills();
+		NCLiteRPG_OnRegisterSkills();
 	}
 	hArrayPermittedWpn = CreateArray(ByteCountToCells(MAX_WEAPON_LENGTH));
 }
 
-public void OnPluginEnd() { if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCRPG_DisableSkill(ThisSkillID, true); }
+public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
 
-public void NCRPG_OnRegisterSkills() { ThisSkillID = NCRPG_RegSkill(ThisSkillShortName, 3, 20,10,true); }
+public void NCLiteRPG_OnRegisterSkills() { ThisSkillID = NCLiteRPG_RegSkill(ThisSkillShortName, 3, 20,10,true); }
 
 public void OnMapStart() {
 	ClearArray(hArrayPermittedWpn);
 	
-	NCRPG_Configs RPG_Configs = NCRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
+	NCLiteRPG_Configs RPG_Configs = NCLiteRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
 	cfg_fPercent = RPG_Configs.GetFloat(ThisSkillShortName,"percent",0.6);
 	cfg_bStatTime = RPG_Configs.GetInt(ThisSkillShortName,"stattime",0)?true:false;
 	cfg_fTime	 = RPG_Configs.GetFloat(ThisSkillShortName,"time",0.3);
@@ -88,12 +88,12 @@ public void OnClientConnected(int client){ hArrayAttackerTimers[client] = Create
 
 public void OnClientDisconnect(int client) { KillAttackerTimers(client,true); }
 
-public void NCRPG_OnPlayerSpawn(int client) { KillAttackerTimers(client,false); }
+public void NCLiteRPG_OnPlayerSpawn(int client) { KillAttackerTimers(client,false); }
 
 public void OnClientPutInServer(client) { SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage); }
 
 public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype) {
-	if(!NCRPG_IsValidSkill(ThisSkillID)) return Plugin_Continue;
+	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return Plugin_Continue;
 	if(IsValidPlayer(victim) && IsValidPlayer(attacker) && victim != attacker)
 	{
 		if(GetClientTeam(victim) == GetClientTeam(attacker)) return Plugin_Continue;
@@ -105,7 +105,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			GetClientWeapon(attacker, buffer, sizeof buffer);
 		bool wpn = IsPermittedWeapon(buffer);
 		
-		int level = NCRPG_GetSkillLevel(attacker, ThisSkillID);
+		int level = NCLiteRPG_GetSkillLevel(attacker, ThisSkillID);
 		if(IsPlayerFrozenInternal(victim))
 		{
 			if(!wpn)
@@ -137,18 +137,18 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			if(IsAcitveWeaponKnife(attacker))
 				if(level > 0)
 				{
-					if(NCRPG_SkillActivate(ThisSkillID,attacker,victim)>= Plugin_Handled)return Plugin_Handled;
+					if(NCLiteRPG_SkillActivate(ThisSkillID,attacker,victim)>= Plugin_Handled)return Plugin_Handled;
 					float time = cfg_bStatTime?cfg_fTime:cfg_fTime*level;
 					
 					int array[Freezing];
 					if(cfg_bFreeze)
 					{
-						NCRPG_FreezePlayer(victim, time);
+						NCLiteRPG_FreezePlayer(victim, time);
 						if(cfg_bEffects)CreateIce(victim,time);
 					}
 					else
 					{
-						array[UnslowTimer] = NCRPG_SlowPlayer(victim, cfg_fSlow*level, time);
+						array[UnslowTimer] = NCLiteRPG_SlowPlayer(victim, cfg_fSlow*level, time);
 					}
 					
 					array[TimerHandle] = CreateTimer(time, Timer_DeleteAttackerFromArray, victim);
@@ -163,7 +163,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 						EmitSoundToAll(buffer, victim);
 						
 					}
-					NCRPG_SkillActivated(ThisSkillID,attacker);
+					NCLiteRPG_SkillActivated(ThisSkillID,attacker);
 				}
 		}
 	}

@@ -1,6 +1,6 @@
 #pragma semicolon 1
 
-#include "NCIncs/nc_rpg.inc"
+#include "NCLiteIncs/nc_rpg.inc"
 
 #define VERSION				"1.3"
 #define MAX_WEAPON_LENGTH	32
@@ -15,30 +15,30 @@ int g_iWeaponRateQueue[MAXPLAYERS+1][2];
 int g_iWeaponRateQueueLength;
 
 public Plugin myinfo = {
-	name		= "NCRPG Skill Attack Speed",
+	name		= "NCLiteRPG Skill Attack Speed",
 	author		= "SenatoR",
-	description	= "Skill Attack Speed for NCRPG",
+	description	= "Skill Attack Speed for NCLiteRPG",
 	version		= VERSION
 };
 
 
 public void OnPluginStart() 
 {
-	if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCRPG_OnRegisterSkills();
+	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
 	m_OffsetNextPrimaryAttack = FindSendPropInfo("CBaseCombatWeapon","m_flNextPrimaryAttack");
-	if(m_OffsetNextPrimaryAttack==-1) { LogError("[NCRPG] Error finding next primary attack offset."); }
+	if(m_OffsetNextPrimaryAttack==-1) { LogError("[NCLiteRPG] Error finding next primary attack offset."); }
 	HookEvent("weapon_fire", Event_WeaponFire, EventHookMode_Pre);
 }
 
-public void OnPluginEnd() { if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCRPG_DisableSkill(ThisSkillID, true); }
+public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
 
-public void NCRPG_OnRegisterSkills() { ThisSkillID = NCRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
+public void NCLiteRPG_OnRegisterSkills() { ThisSkillID = NCLiteRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
 
 public void OnMapStart() {
 	if(hArrayPermittedWpn == INVALID_HANDLE) hArrayPermittedWpn = CreateArray(ByteCountToCells(MAX_WEAPON_LENGTH));
 	ClearArray(hArrayPermittedWpn);
 	
-	NCRPG_Configs RPG_Configs = NCRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
+	NCLiteRPG_Configs RPG_Configs = NCLiteRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
 	cfg_fPercent = RPG_Configs.GetFloat(ThisSkillShortName,"percent",0.5);
 	cfg_bRestrict = RPG_Configs.GetInt(ThisSkillShortName,"restrict",1)?true:false;
 	if(cfg_bRestrict)
@@ -52,9 +52,9 @@ public void OnMapStart() {
 
 public Action Event_WeaponFire(Event event, const char[] name, bool dontBroadcast) 
 {
-	if(!NCRPG_IsValidSkill(ThisSkillID))  return Plugin_Continue;
+	if(!NCLiteRPG_IsValidSkill(ThisSkillID))  return Plugin_Continue;
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	int level = NCRPG_GetSkillLevel(client, ThisSkillID);
+	int level = NCLiteRPG_GetSkillLevel(client, ThisSkillID);
 	if (level > 0)
 	{
 		char buffer[PLATFORM_MAX_PATH*2];
@@ -63,13 +63,13 @@ public Action Event_WeaponFire(Event event, const char[] name, bool dontBroadcas
 		if(!cfg_bRestrict) wpn =false;
 		if(!wpn)
 		{
-			if(NCRPG_SkillActivate(ThisSkillID,client,client)>= Plugin_Handled)return Plugin_Handled;
+			if(NCLiteRPG_SkillActivate(ThisSkillID,client,client)>= Plugin_Handled)return Plugin_Handled;
 			int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");
 			if(weapon != -1)
 			{
 				g_iWeaponRateQueue[g_iWeaponRateQueueLength][0] = weapon;
 				g_iWeaponRateQueue[g_iWeaponRateQueueLength++][1] = level;
-				NCRPG_SkillActivated(ThisSkillID,client);
+				NCLiteRPG_SkillActivated(ThisSkillID,client);
 			} 
 		
 		}

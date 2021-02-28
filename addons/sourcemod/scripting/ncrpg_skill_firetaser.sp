@@ -1,5 +1,5 @@
 #pragma semicolon 1
-#include "NCIncs/nc_rpg.inc"
+#include "NCLiteIncs/nc_rpg.inc"
 #define ThisSkillShortName "firet"
 #define VERSION				"1.2"
 #define MAX_WEAPON_LENGTH	32
@@ -9,23 +9,23 @@ int ThisSkillID;
 float cfg_fPercent;int cfg_iDamage;
 float MaxWorldLength;
 public Plugin myinfo = {
-	name		= "NCRPG Skill Fire Taser",
+	name		= "NCLiteRPG Skill Fire Taser",
 	author		= "SenatoR",
-	description	= "Skill Fire Taser for NCRPG",
+	description	= "Skill Fire Taser for NCLiteRPG",
 	version		= VERSION
 };
 
 public void OnPluginStart() {
-	if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCRPG_OnRegisterSkills();
+	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
 	HookEvent("weapon_fire", Event_WeaponFire, EventHookMode_Pre);
 }
 
-public void OnPluginEnd() { if((ThisSkillID = NCRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCRPG_DisableSkill(ThisSkillID, true); }
+public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
 
-public void NCRPG_OnRegisterSkills() { ThisSkillID = NCRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
+public void NCLiteRPG_OnRegisterSkills() { ThisSkillID = NCLiteRPG_RegSkill(ThisSkillShortName, 10, 10,5,true); }
 
 public void OnMapStart() {
-	NCRPG_Configs RPG_Configs = NCRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
+	NCLiteRPG_Configs RPG_Configs = NCLiteRPG_Configs(ThisSkillShortName,CONFIG_SKILL);
 	cfg_fPercent = RPG_Configs.GetFloat(ThisSkillShortName,"percent",1.5);
 	cfg_iDamage = RPG_Configs.GetInt(ThisSkillShortName,"damage",1);
 	RPG_Configs.SaveConfigFile(ThisSkillShortName,CONFIG_SKILL);
@@ -37,20 +37,20 @@ public void OnMapStart() {
 
 }
 
-public void NCRPG_OnPlayerSpawn(int client) {
-	if(!NCRPG_IsValidSkill(ThisSkillID)) return;
-	int level = NCRPG_GetSkillLevel(client, ThisSkillID);
+public void NCLiteRPG_OnPlayerSpawn(int client) {
+	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return;
+	int level = NCLiteRPG_GetSkillLevel(client, ThisSkillID);
 	if(level > 0) if(GetRandomFloat(0.0, 100.0) <= cfg_fPercent*level) GivePlayerItem(client,"weapon_taser");
 	//if(level > 0) GivePlayerItem(client,"weapon_taser");
 }
 
 public Action Event_WeaponFire(Event event, const char[] name, bool dontBroadcast) 
 {
-	if(!NCRPG_IsValidSkill(ThisSkillID))  return Plugin_Continue;
+	if(!NCLiteRPG_IsValidSkill(ThisSkillID))  return Plugin_Continue;
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(IsValidPlayer(client,true))
 	{
-		int level = NCRPG_GetSkillLevel(client, ThisSkillID);
+		int level = NCLiteRPG_GetSkillLevel(client, ThisSkillID);
 		if(level>0)
 		{
 			char sWeapon[32];
@@ -63,7 +63,7 @@ public Action Event_WeaponFire(Event event, const char[] name, bool dontBroadcas
 					GetEntPropVector(client, Prop_Send, "m_vecOrigin", origin);
 					origin[2] += 50.0; AddInFrontOf(origin, angles, 5, origin);
 					int target = FindAliveTarget(client, origin, angles, target_pos);
-					if(NCRPG_SkillActivate(ThisSkillID,client,target)>= Plugin_Handled) return Plugin_Handled;
+					if(NCLiteRPG_SkillActivate(ThisSkillID,client,target)>= Plugin_Handled) return Plugin_Handled;
 					if (target > 0){ RocketAttack(client, origin, angles); }
 				}
 			}
@@ -137,7 +137,7 @@ void CreateExplosion(int rocket)
 		DispatchKeyValue(index, "targetname", "Rocket_Explosion");
 		DispatchKeyValueVector(index, "origin", origin);
 		DispatchKeyValue(index, "spawnflags", "6146"); char buffer[256];
-		int level = NCRPG_GetSkillLevel(rocket_client, ThisSkillID)*cfg_iDamage;
+		int level = NCLiteRPG_GetSkillLevel(rocket_client, ThisSkillID)*cfg_iDamage;
 		IntToString(level,buffer,sizeof buffer); DispatchKeyValue(index, "iMagnitude", buffer); 
 		DispatchKeyValue(index, "iRadiusOverride", "250"); DispatchSpawn(index);
 		if (rocket_client > 0) SetEntPropEnt(index, Prop_Send, "m_hOwnerEntity", rocket_client);
