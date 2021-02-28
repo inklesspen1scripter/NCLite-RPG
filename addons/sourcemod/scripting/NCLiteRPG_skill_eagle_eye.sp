@@ -21,7 +21,10 @@ public Plugin myinfo = {
 	url			= ""
 };
 
-public void OnPluginStart() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills(); }
+public void OnPluginStart() {
+	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
+	HookEvent("player_spawn", EventSpawn);
+}
 
 public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
 
@@ -62,7 +65,11 @@ public Action NCLiteRPG_OnSkillLevelChange(int client, &skillid,int old_value, &
 		PlayerSense[client] = CreateTimer(cfg_fTimer, Timer_Sense, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
-public void NCLiteRPG_OnPlayerSpawn(int client) {
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(!client)	return;
+
 	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return;
 	
 	if(PlayerSense[client] != INVALID_HANDLE)

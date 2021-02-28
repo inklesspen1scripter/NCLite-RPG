@@ -18,6 +18,7 @@ public Plugin myinfo = {
 public void OnPluginStart() {
 	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
 	HookEvent("weapon_fire", Event_WeaponFire, EventHookMode_Pre);
+	HookEvent("player_spawn", EventSpawn);
 }
 
 public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
@@ -37,7 +38,16 @@ public void OnMapStart() {
 
 }
 
-public void NCLiteRPG_OnPlayerSpawn(int client) {
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	RequestFrame(EventSpawnPost, event.GetInt("userid"));
+}
+
+public void EventSpawnPost(int client)
+{
+	client = GetClientOfUserId(client);
+	if(!client)	return;
+
 	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return;
 	int level = NCLiteRPG_GetSkillLevel(client, ThisSkillID);
 	if(level > 0) if(GetRandomFloat(0.0, 100.0) <= cfg_fPercent*level) GivePlayerItem(client,"weapon_taser");

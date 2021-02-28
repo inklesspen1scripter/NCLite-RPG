@@ -2,8 +2,6 @@
 Handle hFWD_OnConnectedToDB;
 Handle hFWD_OnRegisterSkills;
 Handle hFWD_OnClientLoaded;
-Handle hFWD_OnPlayerSpawned;
-Handle hFWD_OnPlayerSpawnedPost;
 Handle hFWD_OnPlayerLevelUp;
 Handle hFWD_OnPlayerGiveExpPre;
 Handle hFWD_OnPlayerGiveExpPost;	
@@ -78,15 +76,6 @@ void API_OnPlayerGiveExpPost(int client,int Exp,char[] event_name) {
 	Call_Finish();
 }
 
-void API_OnPlayerSpawn(int client) {
-
-	Call_StartForward(hFWD_OnPlayerSpawned);
-	
-	Call_PushCell(client);
-	
-	Call_Finish();
-}
-
 void API_OnPlayerLevelUp(int client,int level) {
 
 	Call_StartForward(hFWD_OnPlayerLevelUp);
@@ -96,13 +85,6 @@ void API_OnPlayerLevelUp(int client,int level) {
 	Call_Finish();
 }
 
-void API_OnPlayerSpawnedPost(int client) {
-	Call_StartForward(hFWD_OnPlayerSpawnedPost);
-	
-	Call_PushCell(client);
-	
-	Call_Finish();
-}
 public int Native_GetSkillCount(Handle plugin,int numParams) 
 {
 	return GetSkillCount();

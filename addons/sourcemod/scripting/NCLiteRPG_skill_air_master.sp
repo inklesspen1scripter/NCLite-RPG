@@ -26,7 +26,9 @@ public void OnPluginStart() {
 		}
 		NCLiteRPG_OnRegisterSkills(); 
 	}
-	hAirAcceleration = FindConVar("sv_airaccelerate"); 
+	hAirAcceleration = FindConVar("sv_airaccelerate");
+
+	HookEvent("player_spawn", EventSpawn);
 }
 
 public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
@@ -51,7 +53,12 @@ public void Hook_PreThink(int client)
 	if(!IsValidPlayer(client)) return;
 	SetConVarInt(hAirAcceleration, hAirAcceleration.IntValue); 
 }
-public void NCLiteRPG_OnPlayerSpawn(int client) {
+
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(!client)	return;
+
 	if(!NCLiteRPG_IsValidSkill(ThisSkillID)) return;
 	int level = NCLiteRPG_GetSkillLevel(client, ThisSkillID);
 	if(level > 0)

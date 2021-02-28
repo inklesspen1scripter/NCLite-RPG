@@ -22,6 +22,7 @@ public void OnPluginStart() {
 	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
 	HookEvent("player_death",	OnPlayerDeath);
 	HookEvent("round_end", Event_RoundEnd);
+	HookEvent("player_spawn", EventSpawn);
 }
 
 public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
@@ -88,7 +89,12 @@ public Action Respawn(Handle timer,  DataPack pack)
 }
 
 
-public void NCLiteRPG_OnPlayerSpawn(int client) { ClientKillTimer(client); }
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(!client)	return;
+	ClientKillTimer(client);
+}
 public void OnClientDisconnect(int client) { ClientKillTimer(client); }
 void ClientKillTimer(int client) { if (RespawnDelTimer[client] != INVALID_HANDLE) { KillTimer(RespawnDelTimer[client]); RespawnDelTimer[client] = INVALID_HANDLE; } }
 

@@ -24,6 +24,7 @@ public void OnPluginStart() {
 	if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) == -1) NCLiteRPG_OnRegisterSkills();
 	HookEventEx("player_footstep", Event_OnPlayerFootstep);
 	HookEvent("player_death",	   Event_OnResetJump);
+	HookEvent("player_spawn", EventSpawn);
 }
 
 public void OnPluginEnd() { if((ThisSkillID = NCLiteRPG_FindSkillByShortname(ThisSkillShortName)) != -1) NCLiteRPG_DisableSkill(ThisSkillID, true); }
@@ -76,7 +77,11 @@ public Action OnPlayerRunCmd(int client,int &buttons,int &impulse, float vel[3],
 	return Plugin_Continue;
 }
 
-public void NCLiteRPG_OnPlayerSpawn(int client) {
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(!client)	return;
+
 	if(!NCLiteRPG_IsValidSkill(ThisSkillID))  return;
 	ResetJumpingState(client);
 }

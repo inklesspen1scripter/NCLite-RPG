@@ -1,7 +1,6 @@
 void HookEvents() {
 	HookEvent("round_start",	Event_RoundStart);
 	HookEvent("round_end",		Event_RoundEnd);
-	HookEvent("player_spawn", 	Event_PlayerSpawn,EventHookMode_Pre);
 	HookEvent("player_team",	Event_PlayerTeam);
 }
 
@@ -14,19 +13,6 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 			CreateTimer(cfg_fLoadDelay, Timer_LoadDelay, client, TIMER_FLAG_NO_MAPCHANGE);
 			
 	}
-}
-
-public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast) {
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(IsValidPlayer(client))
-	{
-		API_OnPlayerSpawn(client);
-		CreateTimer(0.09, Timer_PostSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
-	}
-}
-
-public Action Timer_PostSpawn(Handle timer, int client) {
-	API_OnPlayerSpawnedPost(client);
 }
 
 public Action Timer_LoadDelay(Handle timer, int client) {

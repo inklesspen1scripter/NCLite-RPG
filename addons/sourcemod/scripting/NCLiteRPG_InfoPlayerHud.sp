@@ -27,6 +27,11 @@ public void OnPluginStart()
 	LoadTranslations("NCLiteRPG_hudinfo.phrases");
 }
 
+public void OnMapStart()
+{
+	CreateTimer(1.0, Info_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+}
+
 void PrintHud(int client,char[] Message)
 {
 	if(cfg_iType)
@@ -39,23 +44,25 @@ void PrintHud(int client,char[] Message)
 		PrintHintText(client, Message);
 	}
 }
-public void NCLiteRPG_OnPlayerSpawn(int client) {
-	CreateTimer(1.0, Info_Timer, client, TIMER_REPEAT);
-}
 
-public Action Info_Timer(Handle timer, any client)
+public Action Info_Timer(Handle timer, any asd)
 {
-	if (IsValidPlayer(client))
+	for(int client = MaxClients;client;--client)
 	{
-		if (IsPlayerAlive(client) && GetClientTeam(client) > 1)
+		if(!IsClientInGame(client))	continue;
+
+		if (IsPlayerAlive(client))
 		{
-			char Message[1024];
-			int GetLvl = NCLiteRPG_GetLevel(client);
-			int GetCredit = NCLiteRPG_GetCredits(client);
-			int GetXp = NCLiteRPG_GetXP(client);
-			int GetReqXp = NCLiteRPG_GetReqXP(client);
-			FormatST("NCLiteRPG STATS\nLevel: %d XP: %d/%d Credits: %d",Message,sizeof Message,client,"HudInfo", GetLvl, GetXp, GetReqXp,GetCredit);
-			PrintHud(client, Message);
+			if(GetClientTeam(client) > 1)
+			{
+				char Message[1024];
+				int GetLvl = NCLiteRPG_GetLevel(client);
+				int GetCredit = NCLiteRPG_GetCredits(client);
+				int GetXp = NCLiteRPG_GetXP(client);
+				int GetReqXp = NCLiteRPG_GetReqXP(client);
+				FormatST("NCLiteRPG STATS\nLevel: %d XP: %d/%d Credits: %d",Message,sizeof Message,client,"HudInfo", GetLvl, GetXp, GetReqXp,GetCredit);
+				PrintHud(client, Message);
+			}
 		}
 		else if (!IsPlayerAlive(client))
 		{
@@ -69,22 +76,11 @@ public Action Info_Timer(Handle timer, any client)
 				int GetReqXp = NCLiteRPG_GetReqXP(i);
 				FormatST("NCLiteRPG STATS\nName: %N Level: %d XP: %d/%d Credits: %d",Message,sizeof Message,client,"HudInfoSpec", i, GetLvl, GetXp, GetReqXp,GetCredit);
 				PrintHud(client, Message);
-				
-				
 			}
 		}
-		else
-		{
-			return Plugin_Stop;
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
 	}
 	return Plugin_Continue;
 }
-
 
 stock bool StringToColor(const char[] str,int color[4], const int defvalue = 0)
 {

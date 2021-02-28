@@ -20,6 +20,8 @@ public OnPluginStart()
 {
 	RegConsoleCmd("say",NCLiteRPG_SayCommand);
 	RegConsoleCmd("say_team",NCLiteRPG_SayCommand);
+
+	HookEvent("player_spawn", EventSpawn);
 }
 
 public OnMapStart() { LoadAllConfigs(); LoadTranslations("NCLiteRPG_rank.phrases");}
@@ -63,8 +65,15 @@ public Action NCLiteRPG_SayCommand(int client,int args) {
 int ShortExplodeStr(char[] input, char[][] out){ return ExplodeString(input, ",", out, MAX_RPG_CMDS, MAX_RPG_CMDS_LENGTH);}
 
 //XP
+public void EventSpawn(Event event, const char[] name, bool dbc)
+{
+	if(cfg_ShowSpawnXP)
+	{
+		int client = GetClientOfUserId(event.GetInt("userid"));
+		if(client && NCLiteRPG_GetLevel(client) > 0 && NCLiteRPG_GetDbHandle() != null) GetXP(client);
+	}
+}
 
-public void NCLiteRPG_OnPlayerSpawn(int client){ if(cfg_ShowSpawnXP && IsValidPlayer(client,true) && NCLiteRPG_GetLevel(client) > 0 && NCLiteRPG_GetDbHandle() != null) GetXP(client);}
 void GetXP(int client) {
 	char msg[196];
 	FormatST("Your have %i level and your %i/%i XP.",msg,sizeof msg,client,"Spawn message your xp", NCLiteRPG_GetLevel(client), NCLiteRPG_GetXP(client), NCLiteRPG_GetReqXP(client));
