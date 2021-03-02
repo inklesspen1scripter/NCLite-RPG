@@ -218,10 +218,10 @@
 	
 	//Chat Translate
 	
-	"NCRPG"
+	"NCLiteRPG"
 	{
-		"ru"	"{BLUE}[{RED}NCRPG{BLUE}]{DEFAULT}"
-		"en"	"{BLUE}[{RED}NCRPG{BLUE}]{DEFAULT}"
+		"ru"	"{BLUE}[{RED}NCLiteRPG{BLUE}]{DEFAULT}"
+		"en"	"{BLUE}[{RED}NCLiteRPG{BLUE}]{DEFAULT}"
 	}
 	"This function is to develop"
 	{
@@ -376,7 +376,7 @@
 	"Help: feedback bug"
 	{
 		"en"	"Feedback bug"
-		"ru"	"Если вы нашли какую-то ошибку в данном моде,\n то пожалуйста сообщите об этом администратору.\nВы можете это сделать двумя способами:\n1) Выбрав 5-ый пункт в этом меню\n2) Написав в чате ncrpg_bfb ''ваше сообщение''"
+		"ru"	"Если вы нашли какую-то ошибку в данном моде,\n то пожалуйста сообщите об этом администратору.\nВы можете это сделать двумя способами:\n1) Выбрав 5-ый пункт в этом меню\n2) Написав в чате NCLiteRPG_bfb ''ваше сообщение''"
 	}		
 	"HUD feedback bug"
 	{
@@ -691,6 +691,16 @@
 		"en"	"Gives you the ability to freeze your enemy by stabbing him"
 		"ru"	"Замораживает врага при ранении ножом"
 	}	
+	"clip_Name"
+	{
+		"en"	"Extended Clip"
+		"ru"	"Расширенный магазин"
+	}	
+	"clip_Desc"
+	{
+		"en"	"Increases weapon's clip size"
+		"ru"	"Увеличивает размер магазина оружия"
+	}	
 	"frostp_Name"
 	{
 		"en"	"Frost Pistols"
@@ -900,6 +910,16 @@
 	{
 		"en"	"Gives you the ability to slowly raise the HP of nearby teammates"
 		"ru"	"Лечит ближайших игроков вашей команды"
+	}	
+	"fastreload_Name"
+	{
+		"en"	"Fast Reload"
+		"ru"	"Быстрая перезарядка"
+	}	
+	"fastreload_Desc"
+	{
+		"en"	"Increases reload speed"
+		"ru"	"Ускоряет перезарядку"
 	}	
 	"adrenaline_Name"
 	{

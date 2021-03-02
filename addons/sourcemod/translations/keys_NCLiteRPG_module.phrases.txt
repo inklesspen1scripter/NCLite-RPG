@@ -38,8 +38,8 @@
 
 	"CHAT_PREFIX"
 	{
-		"ru"	"[NCRPG] "
-		"en"	"[NCRPG]"
+		"ru"	"[NCLiteRPG] "
+		"en"	"[NCLiteRPG]"
 	}
 
 	"YOU_RECEIVED_CREDITS"

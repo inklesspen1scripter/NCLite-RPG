@@ -73,6 +73,7 @@ public APLRes AskPluginLoad2(Handle myself,bool late,char[] error,int err_max)
 	hFWD_OnPlayerGiveExpPost			= CreateGlobalForward("NCLiteRPG_OnPlayerGiveExpPost",		ET_Hook, Param_Cell, Param_Cell,Param_String);	
 	hFWD_OnPlayerGiveCreditsPre		= CreateGlobalForward("NCLiteRPG_OnPlayerGiveCreditsPre",		ET_Event, Param_Cell, Param_CellByRef,Param_String);
 	hFWD_OnPlayerGiveCreditsPost	= CreateGlobalForward("NCLiteRPG_OnPlayerGiveCreditsPost",		ET_Hook, Param_Cell, Param_Cell,Param_String);
+	hFWD_OnPlayerGiveExpPre			= CreateGlobalForward("NCRPG_OnPlayerGiveExpPre",		ET_Event, Param_Cell, Param_CellByRef,Param_String);
 	hFWD_OnSkillActivatedPre			= CreateGlobalForward("NCLiteRPG_OnSkillActivatePre",		ET_Event, Param_Cell, Param_Cell,Param_Cell);
 	hFWD_OnSkillActivatedPost		= CreateGlobalForward("NCLiteRPG_OnSkillActivatedPost",		ET_Hook, Param_Cell, Param_Cell);
 	return APLRes_Success;
